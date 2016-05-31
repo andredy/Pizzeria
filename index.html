@@ -1,0 +1,467 @@
+<!-DOCTYPE HTML-->
+<html>
+<head>
+<link rel="stylesheet" href="css/jquery.mobile-1.4.5.css" type="text/css"/>
+<link rel="stylesheet" href="css/jquery.mobile.theme-1.4.5.min.css" type="text/css"  />
+<link rel="stylesheet" href="css/jquery.mobile.structure-1.4.5.min.css" type="text/css" />
+<script type="text/javascript" src="phonegap.js"></script>
+<script type="text/javascript" src="js/jquery-2.2.0.min.js" ></script>
+<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js" ></script>
+
+<script type="text/javascript">
+document.addEventListener("deviceready", onDeviceReady, false);
+
+function onDeviceReady() {
+$("#btnConsServ").tap(function (){//Evento de botón para consultar los servicios de la base de datos
+	      miOptions={
+	        zoom:8,
+	        center:defaultPos,
+	        disableDefaultUI:true,
+	        mapTypeId:google.maps.MapTypeId.ROADMAP};
+
+	         map= new google.maps.Map(document.getElementById("map-canvas"),miOptions);
+	          obtenerMarcas();
+	    });
+$("#btnEnviar").tap(function env(){
+                    //alert("Empesamos con las Alertas jijijij"); 
+                    var nom=$("#txtnombre").val();
+                    var con=$("#passclave").val();
+                    var hrs=$("#txthoras").val();                    
+                    var cla=$("#txtClasificacion").val();
+                    
+                    
+                    
+                    if(nom==""&& con==""&& hrs==""&& cla==""){
+                        alert("Introduzca los datos requeridos en todos los campos");
+                    }else{
+                        //alert("Se enviaran los datos: Nombre: "+nom+", con dirección: "+dire+", Forma de pago: "+pga+", Sus cordenadas( latitud: "+latud+", longitud: "+lotud+"), Núm Tel: "+tel+" imagen: "+img+", Pizza: "+pza+", Tamaño: "+tno+", bebida: "+bda+", RFC: "+rfc+", pagar un total de: "+sma);
+                        $.ajax({
+                            type:"POST",
+                            url:"registrar.php",
+                            data:"nomb="+nom+"&cont="+con+"&hor="+hrs+"&clas="+cla,
+                            success: exitoso
+                        });
+                        function exitoso(datos){
+                            alert("Respuesta: "+datos);
+                        }
+                    }
+                });
+$("#btnConsultar").tap(function consul(){
+	$.ajax({
+		type:"POST",
+		url:"http://pizzeriaelcoyote.esy.es/consultar.php",
+		data:"",
+		success: function(datos){
+			 alert("Respuesta: "+datos);
+			
+                        var reg=$.parseJSON(datos);
+                       
+			var contenedor=$("#datos");
+                        contenedor.html('<table border="1" id="tb1"><th>Nombre</th><th>Mesa</th><th>Pizza</th><th>Tamano</th><th>Bebida</th>');
+			
+        //contenedor.html('<table border="1" id="tb1"><th>Id</th><th>Nombre</th><th>Apellidos</th><th>Numero_control</th><th>Edad</th>');
+			var fila=$("#tb1");
+			for(var i in reg){
+                            fila.append('<tr><td>'+reg[i].Nombre+'</td><td>'+reg[i].Mesa+'</td><td>'+reg[i].Pizza+'</td><td>'+reg[i].Tamano+'</td><td>'+reg[i].Bebida+'</td></tr>');
+			//fila.append('<tr><td>'+reg[i].Id+'</td><td>'+reg[i].Nombre+'</td><td>'+reg[i].Apellidos+'</td><td>'+reg[i].Numero_control+'</td><td>'+reg[i].Edad+'</td></tr>');
+			}
+			fila.append('</table>');
+		}	
+	});
+
+});
+$("#btnConsulDomi").tap(function consul(){
+	$.ajax({
+		type:"POST",
+		url:"http://pizzeriaelcoyote.esy.es/consultarDom.php",
+		data:"",
+		success: function(datos){
+			 alert("Respuesta: "+datos);
+			
+                        var reg=$.parseJSON(datos);
+                       
+			var contenedor=$("#datos2");
+                        contenedor.html('<table border="1" id="tb2"><th>Nombre</th><th>Direccion</th><th>Pizza</th><th>Tamano</th><th>Bebida</th>');
+			
+        //contenedor.html('<table border="1" id="tb1"><th>Id</th><th>Nombre</th><th>Apellidos</th><th>Numero_control</th><th>Edad</th>');
+			var fila=$("#tb2");
+			for(var i in reg){
+                            fila.append('<tr><td>'+reg[i].Nombre+'</td><td>'+reg[i].Direccion+'</td><td>'+reg[i].Pizza+'</td><td>'+reg[i].Tamano+'</td><td>'+reg[i].Bebida+'</td></tr>');
+			//fila.append('<tr><td>'+reg[i].Id+'</td><td>'+reg[i].Nombre+'</td><td>'+reg[i].Apellidos+'</td><td>'+reg[i].Numero_control+'</td><td>'+reg[i].Edad+'</td></tr>');
+			}
+			fila.append('</table>');
+		}	
+	});
+
+});
+$("#btnConsultar1").tap(function consul(){
+	$.ajax({
+		type:"POST",
+		url:"http://pizzeriaelcoyote.esy.es/consultar2.php",
+		data:"",
+		success: function(datos){
+			 //alert("Respuesta: "+datos);
+			var reg=$.parseJSON(datos);
+                       var contenedor=$("#datos3");
+                        contenedor.html('<table border="1" id="tb3"><th>Nombre</th><th>Contasena</th><th>HrsTrabajo</th><th>Clasificacion</th>');
+			//contenedor.html('<table border="1" id="tb1"><th>Id</th><th>Nombre</th><th>Apellidos</th><th>Numero_control</th><th>Edad</th>');
+			var fila=$("#tb3");
+			for(var i in reg){
+                            fila.append('<tr><td>'+reg[i].Nombre+'</td><td>'+reg[i].Contrasena+'</td><td>'+reg[i].HrsTrabajo+'</td><td>'+reg[i].Clasificacion+'</td></tr>');
+			//fila.append('<tr><td>'+reg[i].Id+'</td><td>'+reg[i].Nombre+'</td><td>'+reg[i].Apellidos+'</td><td>'+reg[i].Numero_control+'</td><td>'+reg[i].Edad+'</td></tr>');
+			}
+			fila.append('</table>');
+		}	
+	});
+
+});
+$("#btnConsultar2").tap(function consul(){
+	$.ajax({
+		type:"POST",
+		url:"http://pizzeriaelcoyote.esy.es/consultar2.php",
+		data:"",
+		success: function(datos){
+			 //alert("Respuesta: "+datos);
+			var reg=$.parseJSON(datos);
+                       var contenedor=$("#datos4");
+                        contenedor.html('<table border="1" id="tb4"><th>Nombre</th><th>Contasena</th><th>HrsTrabajo</th><th>Clasificacion</th>');
+			//contenedor.html('<table border="1" id="tb1"><th>Id</th><th>Nombre</th><th>Apellidos</th><th>Numero_control</th><th>Edad</th>');
+			var fila=$("#tb4");
+			for(var i in reg){
+                            fila.append('<tr><td>'+reg[i].Nombre+'</td><td>'+reg[i].Contrasena+'</td><td>'+reg[i].HrsTrabajo+'</td><td>'+reg[i].Clasificacion+'</td></tr>');
+			//fila.append('<tr><td>'+reg[i].Id+'</td><td>'+reg[i].Nombre+'</td><td>'+reg[i].Apellidos+'</td><td>'+reg[i].Numero_control+'</td><td>'+reg[i].Edad+'</td></tr>');
+			}
+			fila.append('</table>');
+		}	
+	});
+
+});
+$("#btnBuscNom").tap(function busc(){
+    var nombre=$("#txtNombre").val();
+   	$.ajax({
+		type:"POST",url:"http://pizzeriaelcoyote.esy.es/buscarNom.php",
+		data:"nom="+nombre,                
+		success: function(datos){
+                    //alert("Respuesta: "+datos);
+			var reg=$.parseJSON(datos);
+			var contenedor=$("#divMod");
+			contenedor.html('<input type="text" id="txtModId" disabled="true"><br>');
+                        contenedor.append('<input type="text" id="txtModNombre"><br>');
+                        contenedor.append('<input type="text" id="txtModContrasena"><br>');
+                        contenedor.append('<input type="text" id="txtModHrsTrabajo"><br>');
+                        contenedor.append('<input type="text" id="txtModClas" disabled="true"><br>');
+                        var idMod=$("#txtModId");
+                        idMod.val(reg[0].idPersonal);
+                        var NomMod=$("#txtModNombre");
+                        NomMod.val(reg[0].Nombre);
+                        var ConMod=$("#txtModContrasena");
+                        ConMod.val(reg[0].Contrasena);
+                        var HTMod=$("#txtModHrsTrabajo");
+                        HTMod.val(reg[0].HrsTrabajo);
+                        $("#txtModClas").val(reg[0].Clasificacion);
+                        
+		}	
+	});
+}); 
+$("#btnBuscNom2").tap(function busc(){
+    var nombre=$("#txtNomb").val();
+   	$.ajax({
+		type:"POST",url:"http://pizzeriaelcoyote.esy.es/buscarNom.php",
+		data:"nom="+nombre,                
+		success: function(datos){
+                    //alert("Respuesta: "+datos);
+			var reg=$.parseJSON(datos);
+			var contenedor=$("#divMod1");
+			contenedor.html('<input type="text" id="txtModId" disabled="true"><br>');
+                        contenedor.append('<input type="text" id="txtModNombre"><br>');
+                        contenedor.append('<input type="text" id="txtModContrasena"><br>');
+                        contenedor.append('<input type="text" id="txtModHrsTrabajo"><br>');
+                        contenedor.append('<input type="text" id="txtModClas" disabled="true"><br>');
+                        var idMod=$("#txtModId");
+                        idMod.val(reg[0].idPersonal);
+                        var NomMod=$("#txtModNombre");
+                        NomMod.val(reg[0].Nombre);
+                        var ConMod=$("#txtModContrasena");
+                        ConMod.val(reg[0].Contrasena);
+                        var HTMod=$("#txtModHrsTrabajo");
+                        HTMod.val(reg[0].HrsTrabajo);
+                        $("#txtModClas").val(reg[0].Clasificacion);
+                        
+		}	
+	});
+}); 
+$("#btnActualizar").tap(function modif(){
+ var nombre=$("#txtModNombre").val();
+ var Cont=$("#txtModContrasena").val();
+ var ht=$("#txtModHrsTrabajo").val();
+ var cl=$("#txtModclas").val();
+ 
+   $.ajax({
+       type:"POST",
+       url:"http://pizzeriaelcoyote.esy.es/Actualizar.php",
+       data:"Nombre="+nombre+"&Cont="+Cont+"&ht="+ht,
+       success: function (datos){
+       alert("Respuesta: "+datos);
+       }
+   });
+
+});
+$("#btnEliminar").tap(function modif(){
+ var nombre=$("#txtModId").val();
+ 
+   $.ajax({
+       type:"POST",
+       url:"http://pizzeriaelcoyote.esy.es/Eliminar.php",
+       data:"NC="+nombre,
+       success: function (datos){
+       alert("Respuesta: "+datos);
+       }
+   });
+
+});
+    
+}
+</script>
+<script type="text/javascript">
+document.addEventListener("deviceready", onDeviceReady, false);
+
+function onDeviceReady() {
+    $("#cbOpcionesB").change(function(){
+    //alert("Cambio de opccion");
+            var seleccion= $("#cbOpcionesB option:selected").val();
+            $("#txtClasificacion").val(seleccion);
+            //alert("Cambio de opccion"+seleccion);
+        });
+    }
+</script>
+<script type="text/javascript">
+$(document).on("pageinit","#Principal", function(e, data){
+ var mapa;
+ var miOptions;
+ var defaultPos;
+ var opciones;
+ var marca;
+ var infoVentanta;
+ defaultPos=new  google.maps.LatLng(19.463948, -97.686259);
+ opciones={maximumAge:500000,enableHighAccuracy:true,timeout:5000};
+
+document.addEventListener("deviceready", onDeviceReady, false);
+    function onDeviceReady(){
+	     $("#btnConsServ").tap(function (){//Evento de botón para consultar los servicios de la base de datos
+	      miOptions={
+	        zoom:8,
+	        center:defaultPos,
+	        disableDefaultUI:true,
+	        mapTypeId:google.maps.MapTypeId.ROADMAP};
+
+	         map= new google.maps.Map(document.getElementById("map-canvas"),miOptions);
+	          obtenerMarcas();
+	    });
+
+    
+function uploadPhoto(foto) {
+	//alert("si entro: "+foto);
+	var options = new FileUploadOptions();
+	options.fileKey="file";
+	options.fileName=$("#Rfc").val();
+	options.mimeType="image/jpeg";
+        //alert("si entro a upload: "+options.fileName);
+	var params = {};
+	params.value1 = "test";
+	params.value2 = "param";
+	options.params = params;
+
+	var ft = new FileTransfer();
+	ft.upload(foto,"http://pizzeriaelcoyote.esy.es/subirArchivo.php",function(r){
+		navigator.notification.confirm("El archivo: "+r.response,null, "Notificacion");
+	}, function(err){
+		navigator.notification.alert("Error: "+err.code+" detalle: "+err.response,null, "Error de Envío");
+	}, options);
+}
+
+function obtenerUbicacion(){//Funcion que obtiene la Ubicación del dispositivo móvil
+    if(navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(exito, falla, opciones);
+
+	  function exito(posic){
+	      var corUbic=new google.maps.LatLng(posic.coords.latitude, posic.coords.longitude);
+	      $("#obtLatitud").val(posic.coords.latitude);
+	      $("#obtLongitud").val(posic.coords.longitude);
+	      marca=new google.maps.Marker({
+		        position:corUbic,
+		        map:map,
+		        title:"Usted esta ubicado aqui",
+		        animation:google.maps.Animation.DROP
+	      });
+
+	      infoVentanta=new google.maps.InfoWindow({
+		      position:corUbic,
+		      content:"<p>Tu Ubicación es: </p>"+corUbic
+	      });
+	      google.maps.event.addListener(marca, "click", function(){infoVentanta.open(map,this);});
+	     }
+
+	      function falla(error){
+	         alert("Error en el servicio Geolocalizador: "+error.code+" detalle: "+error.response);
+	      }
+	  }else{
+	      alert("Su dispositivo no soporta la geolocalización o no esta habilitada esta funcionalidad");
+	  }
+}
+
+function obtenerMarcas(){
+	      $.ajax({
+		        type:"POST",
+		        url:"http://pizzeriaelcoyote.esy.es/consultar.php",
+		        data:"",
+		        success: serviciosConsultados
+	      });
+
+        function serviciosConsultados(datos){
+		        var respDatos=$.parseJSON(datos);
+		        var nombre, dir,rfc, tel, mail, lat, lng, ruta;
+		        for(var i in respDatos){
+		            nombre=respDatos[i].NombreServicio;//Cambiarlos de acuerdo a los campos de su base de datos
+		            dir=respDatos[i].Direccion;
+		            rfc=respDatos[i].RFC;
+		            tel=respDatos[i].Telefono;
+		            lat=respDatos[i].Latitud;
+		            lng=respDatos[i].Longitud;
+		            ruta=respDatos[i].Foto;
+		            dibujarMarcas(nombre, dir, rfc, tel, lat, lng, ruta);
+	          }
+	      }
+}
+
+function dibujarMarcas(nombre, dir, rfc, tel, lat, lng, ruta){//habilitar esta función
+  //alert("si llego: Lat:"+lat+" Long:"+lng+" ruta: "+ruta );
+  var latlng=new google.maps.LatLng(lat,lng);
+  var marca2=new google.maps.Marker({
+	    position:latlng,
+	    map:map,
+	    title:nombre,
+	    animation:google.maps.Animation.DROP
+	});
+
+	var infoVentanta2=new google.maps.InfoWindow({
+	  position:latlng,
+	  content:'<div style="width:200px; height:160px;"><div style="text-align: center; color:#5c041b; font-weight:bolder; font-size:12px; font-family:arial;">' + nombre + '</div><img src="http://iscmoviles.890m.com/'+ruta+'" width="90" heigth="60" /><div style="text-align:center; color: #2e20b8; font-size:12px; font-family:arial; width:200px; text-align:center;">' + dir + '</div><div>Tel: ' + tel + '</div><div>RFC:' + rfc + '</div>'
+	});
+	google.maps.event.addListener(marca2, "click", function(){infoVentanta2.open(map,marca2);});
+}
+});
+</script>
+</head>
+<body>
+    <div data-role="page" id="Inicio">
+	<div data-role="header">
+		<h1> Ordenes</h1>
+	</div>
+	<div data-role="content">  
+           	que desea realizar?
+            <a href="#Registrar" data-role="button" data-transition="flip">Registrar</a>
+            <a href="#Consultar" data-role="button" data-transition="flip">Consultar</a>
+            <a href="#Modificar" data-role="button" data-transition="flip">Modificar</a>
+            <a href="#Eliminar" data-role="button" data-transition="flip">Eliminar</a>
+            <a href="#Repartidor" data-role="button" data-transition="flip">Repartidor</a>
+          
+  	</div>
+	<div data-role="footer">
+		<p>hecho por andres vazquez garcia, sergio aguilar hernandez, misrain valderrabano polo</p>
+	</div>
+</div>
+<div data-role="page" id="Consultar">
+	<div data-role="header">
+		<h1> Ordenes</h1>
+	</div>
+	<div data-role="content">  
+           	
+            <input type="button" value="ordenes local" id="btnConsultar" />
+            <div id="datos"></div>
+             <input type="button" value="ordenes domiclio" id="btnConsulDomi" />
+             <div id="datos2"></div>
+  	</div>
+	<div data-role="footer">
+		<p>hecho por andres vazquez garcia, sergio aguilar hernandez, misrain valderrabano polo</p>
+	</div>
+</div>
+    <div data-role="page" id="Registrar">
+    <div data-role="header">
+		<h1>Formulario de registro</h1>
+	</div>
+    <div data-role="content">
+        <form action="registrar.php" method="post" class="form-register" onsubmit="return validar();">
+            
+            <h2>CREAR UNA CUENTA</h2>
+            <input type="text" id="txtnombre" placeholder=" Nombre" name="nombre" class="input-48" required> 
+            <input type="password" id="passclave" placeholder=" Contraseña" name="clave" class="input-48" required>
+            <input type="text" id="txthoras" placeholder=" HorasTrabajo" name="horas" class="input-100" required>
+            <div id="cbOpcionesB">
+                    <select>
+                        <option value="0"> Seleccione su Clasificacion</option>
+                        <option value="1"> Chef</option>
+                        <option value="2"> Mesero</option>                        
+                        <option value="3"> Repartidor</option>
+                        <option value="4"> Administrador</option>
+                       
+                    </select>
+                </div> 
+                <input type="text" id="txtClasificacion" placeholder="Clasificacion" />
+                <input type="button"  value="Registrar" class="btn-enviar" id="btnEnviar">
+            </form>
+        </div>
+	<div data-role="footer">
+     	   <p>Registra a los empleados</p>
+	</div>
+</div>	
+    <div data-role="page" id="Modificar">
+	<div data-role="header">
+		<h1> Modificar</h1>
+	</div>
+	<div data-role="content">  
+           	
+            <input type="button" value="Consultar" id="btnConsultar1" />
+            <div id="datos3"></div>
+            <input type="text" placeholder="escribe el nombre" id="txtNombre" />
+            <input type="button" value="Buscar por nombre" id="btnBuscNom" />
+            <div id="divMod"></div>
+            <input type="button" value="Actualizar datos" id="btnActualizar" />
+  	</div>
+	<div data-role="footer">
+		<p>hecho por andres vazquez garcia, sergio aguilar hernandez, misrain valderrabano polo</p>
+	</div>
+</div>
+    <div data-role="page" id="Eliminar">
+	<div data-role="header">
+		<h1> Eliminar</h1>
+	</div>
+	<div data-role="content">  
+           	
+            <input type="button" value="Consultar" id="btnConsultar2" />
+            <div id="datos4"></div>
+            <input type="text" placeholder="escribe el nombre" id="txtNomb" />
+            <input type="button" value="Buscar por nombre" id="btnBuscNom2" />
+            <div id="divMod1"></div>
+            <input type="button" value="Eliminar datos" id="btnEliminar" />
+  	</div>
+	<div data-role="footer">
+		<p>hecho por andres vazquez garcia, sergio aguilar hernandez, misrain valderrabano polo</p>
+	</div>
+</div>
+    <div data-role="page" id="Repartidor" data-url="map-page">
+      <div data-role="header" data-position="fixed">
+	<h1>Ubicación de servicios</h1>
+      </div>
+      <div data-role="content" >
+	  <div id="map-canvas">Pulse Consultar servicios para identificar su ubicación en el mapa</div>
+      </div>
+      <div data-role="footer" data-position="fixed" style="text-align:center;">
+	<div data-role="controlgroup" data-type="horizontal">
+	<a href="#Principal" class="ui-btn ui-icon-home ui-btn-icon-left">Regresar</a>
+	<a href="#" class="ui-btn ui-icon-search ui-btn-icon-left" id="btnConsServ">Consultar Todos</a>
+  <a href="#" class="ui-btn ui-icon-search ui-btn-icon-left" id="btnConsHotel">ver otras cosas</a>
+	</div>
+      </div>
+</div>
+</body>
+</html>
